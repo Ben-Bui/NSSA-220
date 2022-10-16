@@ -23,17 +23,17 @@ spawn(){
 	ifstat -a -d 1	
 }
 collect_process_level_metrics(){
-	echo "$duration ,` ps -aux |awk -v r=$pid1 '$2 == r'|awk '{print $3}' `, `ps -aux |awk -v r=$pid1 '$2 == r'|awk '{print $4}'`"  >> APM1_metrics.csv
-	echo "$duration ,` ps -aux |awk -v r=$pid2 '$2 == r'|awk '{print $3}' `, `ps -aux |awk -v r=$pid2 '$2 == r'|awk '{print $4}'`"  >> APM2_metrics.csv
-	echo "$duration ,` ps -aux |awk -v r=$pid3 '$2 == r'|awk '{print $3}' `, `ps -aux |awk -v r=$pid3 '$2 == r'|awk '{print $4}'`"  >> APM3_metrics.csv
-	echo "$duration ,` ps -aux |awk -v r=$pid4 '$2 == r'|awk '{print $3}' `, `ps -aux |awk -v r=$pid4 '$2 == r'|awk '{print $4}'`"  >> APM4_metrics.csv
-	echo "$duration ,` ps -aux |awk -v r=$pid5 '$2 == r'|awk '{print $3}' `, `ps -aux |awk -v r=$pid5 '$2 == r'|awk '{print $4}'`"  >> APM5_metrics.csv
-	echo "$duration ,` ps -aux |awk -v r=$pid6 '$2 == r'|awk '{print $3}' `, `ps -aux |awk -v r=$pid6 '$2 == r'|awk '{print $4}'`"  >> APM6_metrics.csv
+	echo "$duration ,` ps -aux |awk '{print $4}'`"  >> APM1_metrics.csv
+	echo "$duration ,` ps -aux |awk '{print $4}'`"  >> APM2_metrics.csv
+	echo "$duration ,` ps -aux |awk '{print $4}'`"  >> APM3_metrics.csv
+	echo "$duration ,` ps -aux |awk '{print $4}'`"  >> APM4_metrics.csv
+	echo "$duration ,` ps -aux |awk '{print $4}'`"  >> APM5_metrics.csv
+	echo "$duration ,` ps -aux |awk '{print $4}'`"  >> APM6_metrics.csv
 }
 collect_system_level_metrics(){
 Disk_writes=`iostat |grep sda |awk '{print $4}'`
 
-	echo "$duration ,$RX_TX_datarate,$Disk_writes,$Available_disk_capacity"  >> system_metrics.csv
+	echo "$duration ,$Disk_writes"  >> system_metrics.csv
 }
 cleanup(){
 
