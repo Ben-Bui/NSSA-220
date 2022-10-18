@@ -33,7 +33,7 @@ collect_process_level_metrics(){
 collect_system_level_metrics(){
 Disk_writes=`iostat |grep sda |awk '{print $4}'`
 
-	echo "$duration ,$Disk_writes"  >> system_metrics.csv
+	echo "$duration ,$disk_writes"  >> system_metrics.csv
 }
 cleanup(){
 
