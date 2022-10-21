@@ -1,6 +1,5 @@
 #!/bin/bash
-spawn(){
-	#spawn processes
+run(){
 	./APM1 $1 &
 	pid1=$!
 	echo "started proc1: ${pid1}"
@@ -22,7 +21,8 @@ spawn(){
 
 	ifstat -a -d 1	
 }
-collect_process_level_metrics(){
+
+process_level_metrics(){
 	echo "$duration ,` ps -aux |awk -v r=$pid1 '$2 == r'|awk '{print $3}' `, `ps -aux |awk -v r=$pid1 '$2 == r'|awk '{print $4}'`"  >> APM1_metrics.csv
 	echo "$duration ,` ps -aux |awk -v r=$pid2 '$2 == r'|awk '{print $3}' `, `ps -aux |awk -v r=$pid2 '$2 == r'|awk '{print $4}'`"  >> APM2_metrics.csv
 	echo "$duration ,` ps -aux |awk -v r=$pid3 '$2 == r'|awk '{print $3}' `, `ps -aux |awk -v r=$pid3 '$2 == r'|awk '{print $4}'`"  >> APM3_metrics.csv
@@ -30,16 +30,16 @@ collect_process_level_metrics(){
 	echo "$duration ,` ps -aux |awk -v r=$pid5 '$2 == r'|awk '{print $3}' `, `ps -aux |awk -v r=$pid5 '$2 == r'|awk '{print $4}'`"  >> APM5_metrics.csv
 	echo "$duration ,` ps -aux |awk -v r=$pid6 '$2 == r'|awk '{print $3}' `, `ps -aux |awk -v r=$pid6 '$2 == r'|awk '{print $4}'`"  >> APM6_metrics.csv
 }
-collect_system_level_metrics(){
-RX_TX_datarate=`ifstat |grep ens33|awk '{print $7","$9}'|sed 's/K//g'`
-Disk_writes=`iostat |grep sda |awk '{print $4}'`
-Available_disk_capacity=`df -h -m /dev/mapper/centos-root |awk '{print $4}'|tail -1`
 
-	echo "$duration ,$RX_TX_datarate,$Disk_writes,$Available_disk_capacity"  >> system_metrics.csv
+system_level_metrics(){
+	RX_TX_datarate=`ifstat |grep ens160|awk '{print $7","$9}'|sed 's/K//g'`
+	Disk_writes=`iostat |grep nvme0n1  |awk '{print $4}'`
+	Disk_capacity=$(df | grep /dev/shm | awk '{print $4}')
+
+	echo "$duration ,$RX_TX_datarate,$Disk_writes,$Disk_capacity"  >> system_metrics.csv
 }
-cleanup(){
 
-	#kill proceess ..
+cleanup(){
 	kill -9 $pid1
 	kill -9 $pid2 
 	kill -9 $pid3
@@ -49,26 +49,25 @@ cleanup(){
 	pkill -f -9 "ifstat"
 exit $?
 }
-#clean up
- 	trap cleanup SIGINT
-#echo "Enter the IP address for the NIC"
-read -p "Enter ip address " IP_ADDRESS
-spawn "$IP_ADDRESS"
-#while loop start for running the script every 5 seconds
+
+trap cleanup SIGINT
+
+ip=$(ifconfig ens160 | grep 'inet' | head -n 1 | awk '{print $2}')
+
+run "$ip"
+
 SECONDS=0
 	while true ;
 	do
-		#sleep for 5 seconds
-		sleep 5;
-		if [[ $duration -ge 900 ]]; then
+		if [[ $duration -eq 300 ]]; then
 			cleanup
 		fi
 		echo "sleeping 5 seconds"
 		duration=$SECONDS
 
-		#collect process level metrics
-		collect_process_level_metrics
-		#collect system level metrics
-		collect_system_level_metrics
-		#end of while loop
+		process_level_metrics
+
+		system_level_metrics
+
+		sleep 5;
 	done
