@@ -31,13 +31,13 @@ collect_process_level_metrics(){
 	echo "$duration ,` ps -aux |awk '{print $4}'`"  >> APM6_metrics.csv
 }
 collect_system_level_metrics(){
-Disk_writes=`iostat |grep sda |awk '{print $4}'`
+Disk_writes=iostat |grep nvme0n1 |awk '{print $4}'
 
-	echo "$duration ,$disk_writes"  >> system_metrics.csv
+	echo "$SECOND ,$Disk_writes"  >> system_metrics.csv
 }
 cleanup(){
 
-	#kill proceess ..
+	#kill proceess ..re
 	kill -9 $pid1
 	kill -9 $pid2 
 	kill -9 $pid3
@@ -58,7 +58,7 @@ SECONDS=0
 	do
 		#sleep for 5 seconds
 		sleep 5;
-		if [[ $duration -ge 900 ]]; then
+		if [[ $SECOND -ge 300 ]]; then
 			cleanup
 		fi
 		echo "sleeping 5 seconds"
