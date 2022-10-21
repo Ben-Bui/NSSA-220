@@ -23,12 +23,12 @@ spawn(){
 	ifstat -a -d 1	
 }
 collect_process_level_metrics(){
-	echo "$duration ,` ps -aux |awk '{print $4}'`"  >> APM1_metrics.csv
-	echo "$duration ,` ps -aux |awk '{print $4}'`"  >> APM2_metrics.csv
-	echo "$duration ,` ps -aux |awk '{print $4}'`"  >> APM3_metrics.csv
-	echo "$duration ,` ps -aux |awk '{print $4}'`"  >> APM4_metrics.csv
-	echo "$duration ,` ps -aux |awk '{print $4}'`"  >> APM5_metrics.csv
-	echo "$duration ,` ps -aux |awk '{print $4}'`"  >> APM6_metrics.csv
+	echo "$SECOND ,` ps -aux |awk '{print $4}'`"  >> APM1_metrics.csv
+	echo "$SECOND ,` ps -aux |awk '{print $4}'`"  >> APM2_metrics.csv
+	echo "$SECOND ,` ps -aux |awk '{print $4}'`"  >> APM3_metrics.csv
+	echo "$SECOND ,` ps -aux |awk '{print $4}'`"  >> APM4_metrics.csv
+	echo "$SECOND ,` ps -aux |awk '{print $4}'`"  >> APM5_metrics.csv
+	echo "$SECOND ,` ps -aux |awk '{print $4}'`"  >> APM6_metrics.csv
 }
 collect_system_level_metrics(){
 Disk_writes=iostat |grep nvme0n1 |awk '{print $4}'
