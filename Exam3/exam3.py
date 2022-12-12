@@ -3,7 +3,7 @@ from scapy.all import*
 packets = rdpcap('TeddyBallgame.pcap')
 packets[ICMP].summary()
 
-#make a counter receive bytes and data
+#make a counter 
 recieve = 0
 data = 0
 bytes = 0
@@ -24,4 +24,5 @@ for packet in pkts:
 bytes += packet[IP].len()
 data += packet[ICMP].load()
 
-print(bytes + data)
+print("Echo Request bytes sent to 192.168.200.2 =" + bytes )
+print("Echo Request data sent to 192.168.200.2 =" + data)
